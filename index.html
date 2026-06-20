@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>UniPanel</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2A2620">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="UniPanel">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-512.png">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+  <header class="top">
+    <h1>Uni<span>Panel</span></h1>
+    <div class="header-actions">
+      <div class="date" id="todayDate"></div>
+    </div>
+  </header>
+
+  <!-- VIEW: HOY -->
+  <section class="view active" id="view-hoy">
+    <div id="tiredBannerSlot"></div>
+    <div class="section-title">Lo importante hoy</div>
+    <div id="hoyContent"></div>
+
+    <div class="section-title">Próximos parciales</div>
+    <div class="card" id="hoyParciales"></div>
+
+    <div style="text-align:center; margin:16px 0 4px;">
+      <button class="btn ghost" id="btnModoCansado">😵 Modo cansado</button>
+    </div>
+  </section>
+
+  <!-- VIEW: MATERIAS -->
+  <section class="view" id="view-materias">
+    <div class="section-title">Tus materias</div>
+    <div id="materiasList"></div>
+  </section>
+
+  <!-- VIEW: LECTURAS -->
+  <section class="view" id="view-lecturas">
+    <div class="section-title">Filtrar</div>
+    <div class="card">
+      <select id="filtroMateriaLecturas"></select>
+      <select id="filtroEstadoLecturas">
+        <option value="todas">Todos los estados</option>
+        <option value="pendiente">Pendiente</option>
+        <option value="progreso">En progreso</option>
+        <option value="hecha">Hecha</option>
+        <option value="repasada">Repasada</option>
+      </select>
+    </div>
+    <div class="section-title">Lecturas</div>
+    <div id="lecturasList"></div>
+  </section>
+
+  <!-- VIEW: PARCIALES -->
+  <section class="view" id="view-parciales">
+    <div class="section-title">Parciales</div>
+    <div id="parcialesList"></div>
+  </section>
+
+  <!-- VIEW: REGISTRO -->
+  <section class="view" id="view-registro">
+    <div class="section-title">Registro diario</div>
+    <div id="registroForm"></div>
+    <div class="section-title">Historial</div>
+    <div id="registroList"></div>
+  </section>
+
+  <!-- VIEW: STATS -->
+  <section class="view" id="view-stats">
+    <div class="section-title">Estadísticas</div>
+    <div class="stat-grid" id="statGrid"></div>
+    <div class="section-title">Racha de estudio</div>
+    <div class="card" id="streakCard"></div>
+    <div class="section-title">Avance por materia</div>
+    <div class="card" id="progresoMaterias"></div>
+  </section>
+</div>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-view="hoy"><span class="ic">☀️</span>Hoy</button>
+  <button class="tab-btn" data-view="materias"><span class="ic">📚</span>Materias</button>
+  <button class="tab-btn" data-view="lecturas"><span class="ic">📖</span>Lecturas</button>
+  <button class="tab-btn" data-view="parciales"><span class="ic">📝</span>Parciales</button>
+  <button class="tab-btn" data-view="registro"><span class="ic">🗒️</span>Registro</button>
+  <button class="tab-btn" data-view="stats"><span class="ic">📊</span>Stats</button>
+</nav>
+
+<button class="fab" id="fabBtn">+</button>
+<button class="fab ai-fab" id="aiFab">✨</button>
+
+<!-- MODAL GENERICO -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- PANEL ASISTENTE IA -->
+<div class="ai-overlay" id="aiOverlay">
+  <div class="ai-panel">
+    <div class="ai-panel-header">
+      <h2>✨ Asistente</h2>
+      <div style="display:flex; gap:14px; align-items:center;">
+        <button class="icon-btn" id="aiConfigBtn" title="Configurar">⚙️</button>
+        <button class="icon-btn" id="aiCloseBtn" title="Cerrar">✕</button>
+      </div>
+    </div>
+    <div class="api-key-banner hidden" id="apiKeyBanner">
+      <span>Falta configurar tu API key de OpenAI para usar el asistente.</span>
+      <button class="btn sm" id="apiKeyBannerBtn">Configurar</button>
+    </div>
+    <div class="ai-messages" id="aiMessages"></div>
+    <div class="ai-input-row">
+      <textarea id="aiInput" placeholder="Ej: creá un parcial de Matemática para el 5/7, prioridad alta" rows="1"></textarea>
+      <button id="aiSendBtn">➤</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/db.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/ai-ui.js"></script>
+<script src="js/views.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
