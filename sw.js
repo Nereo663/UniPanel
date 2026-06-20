@@ -1,49 +1,35 @@
-const CACHE_NAME = 'unipanel-cache-v1';
-const ASSETS = [
-  './index.html',
-  './manifest.json',
-  './css/style.css',
-  './js/utils.js',
-  './js/db.js',
-  './js/ai.js',
-  './js/ai-ui.js',
-  './js/views.js',
-  './js/app.js',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
-];
+/* ===================== DATA LAYER ===================== */
+const DB_KEY = 'unipanel_data_v1';
+const SETTINGS_KEY = 'unipanel_settings_v1';
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).catch(()=>{})
-  );
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', (event) => {
-  // Nunca cachear llamadas a la API de OpenAI: siempre red.
-  if (event.request.url.includes('api.openai.com')) {
-    return;
+function loadDB(){
+  const raw = localStorage.getItem(DB_KEY);
+  if(raw){
+    try{ return JSON.parse(raw); }catch(e){}
   }
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (event.request.method === 'GET' && response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      }).catch(() => cached);
-    })
-  );
-});
+  return {
+    materias: [],      // {id, nombre, color}
+    lecturas: [],        // {id, materiaId, modulo, titulo, estado}
+    parciales: [],         // {id, materiaId, fecha, prioridad, nota}
+    tps: [],                  // {id, materiaId, titulo, fechaLimite, estado, nota, totalMateria}
+    tareas: [],              // {id, texto, fecha(YYYY-MM-DD), hecha, esMinima}
+    registros: [],             // {id, fecha, estudie, tiempoMin, costo, repasarManana}
+    lastActiveDate: null,
+    streak: 0
+  };
+}
+function saveDB(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+let db = loadDB();
+if(!db.tps) db.tps = []; // migración: usuarios con datos previos a la función de TPs
+
+function loadSettings(){
+  const raw = localStorage.getItem(SETTINGS_KEY);
+  if(raw){
+    try{ return JSON.parse(raw); }catch(e){}
+  }
+  return { openaiApiKey: '', aiModel: 'gpt-4o-mini' };
+}
+function saveSettings(){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+let settings = loadSettings();
+
+function materiaById(id){ return db.materias.find(m=>m.id===id); }
