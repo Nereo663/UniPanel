@@ -1,35 +1,38 @@
-/* ===================== DATA LAYER ===================== */
-const DB_KEY = 'unipanel_data_v1';
-const SETTINGS_KEY = 'unipanel_settings_v1';
-
-function loadDB(){
-  const raw = localStorage.getItem(DB_KEY);
-  if(raw){
-    try{ return JSON.parse(raw); }catch(e){}
-  }
-  return {
-    materias: [],      // {id, nombre, color}
-    lecturas: [],        // {id, materiaId, modulo, titulo, estado}
-    parciales: [],         // {id, materiaId, fecha, prioridad, nota}
-    tps: [],                  // {id, materiaId, titulo, fechaLimite, estado, nota, totalMateria}
-    tareas: [],              // {id, texto, fecha(YYYY-MM-DD), hecha, esMinima}
-    registros: [],             // {id, fecha, estudie, tiempoMin, costo, repasarManana}
-    lastActiveDate: null,
-    streak: 0
-  };
+{
+  "name": "UniPanel",
+  "short_name": "UniPanel",
+  "description": "Organizá tu universidad: materias, lecturas, parciales y estudio diario.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F6F1E6",
+  "theme_color": "#2A2620",
+  "orientation": "portrait",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }
-function saveDB(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-let db = loadDB();
-if(!db.tps) db.tps = []; // migración: usuarios con datos previos a la función de TPs
-
-function loadSettings(){
-  const raw = localStorage.getItem(SETTINGS_KEY);
-  if(raw){
-    try{ return JSON.parse(raw); }catch(e){}
-  }
-  return { openaiApiKey: '', aiModel: 'gpt-4o-mini' };
-}
-function saveSettings(){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
-let settings = loadSettings();
-
-function materiaById(id){ return db.materias.find(m=>m.id===id); }
